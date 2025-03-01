@@ -8,9 +8,11 @@ dotenv==0.9.9
 google-auth==2.38.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.1
+gunicorn==23.0.0
 httplib2==0.22.0
 idna==3.10
 oauthlib==3.2.2
+packaging==24.2
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pyparsing==3.2.1
