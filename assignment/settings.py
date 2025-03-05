@@ -12,12 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# load_dotenv()
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
@@ -128,8 +128,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+# GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+# GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
-GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+# GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "DEFAULT_VALUE")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "DEFAULT_VALUE")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "DEFAULT_VALUE")
