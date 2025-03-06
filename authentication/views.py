@@ -55,3 +55,25 @@ class GoogleCallbackView(APIView):
             context['success'] = 0
             context['message'] = str(e)
         return Response(context)
+    
+class GoogleDriveAuthenticationView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        context = {
+            'success': 1,
+            'message': 'Successfully generated Google authentication URL.',
+            'data': {}
+        }
+        try:
+            auth_url = (
+                "https://accounts.google.com/o/oauth2/auth?"
+                f"client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={settings.GOOGLE_REDIRECT_URI}&"
+                "response_type=code&scope=https://www.googleapis.com/auth/drive.file"
+            )
+            context["data"]["auth_url"] = auth_url
+        except Exception as e:
+            context['success'] = 0
+            context['message'] = str(e)
+        return Response(context)
