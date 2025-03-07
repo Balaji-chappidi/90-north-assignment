@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 import requests
+import json
 
 class GoogleAuthenticationView(APIView):
     authentication_classes = []
@@ -145,11 +146,14 @@ class GoogleDriveUploadView(APIView):
             access_token = request.data.get("access_token")
             file = request.FILES.get("file")
             headers = {"Authorization": f"Bearer {access_token}"}
-            metadata = {"name": file.name}
+            metadata = {
+                "name": file.name,
+                "mimeType": file.content_type
+            }
 
             files = {
-                'data': ('metadata', requests.utils.json.dumps(metadata), 'application/json'),
-                'file': file
+                'metadata': ('metadata', json.dumps(metadata), 'application/json'),
+                'file': (file.name, file, file.content_type)
             }
             response = requests.post("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", 
                                      headers=headers, 
