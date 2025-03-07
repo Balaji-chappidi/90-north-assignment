@@ -8,4 +8,5 @@ urlpatterns = [
 
     #Google Drive
     path('google-drive-authentication', views.GoogleDriveAuthenticationView.as_view(), name='google-drive-authentication'),
+    path('google-drive-callback', views.GoogleDriveCallbackView.as_view(), name='google-drive-callback'),
 ]
