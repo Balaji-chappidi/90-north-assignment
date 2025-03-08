@@ -202,9 +202,25 @@ class GoogleDriveListFilesView(APIView):
         }
         try:
             access_token = request.GET.get("access_token")
+            if not access_token:
+                raise Exception("Missing access token.")
+
             headers = {"Authorization": f"Bearer {access_token}"}
-            response = requests.get("https://www.googleapis.com/drive/v3/files", headers=headers).json()
-            context['data'] = response
+            params = {
+                "fields": "files(id, name, mimeType, size, createdTime)"
+            }
+
+            response = requests.get(
+                "https://www.googleapis.com/drive/v3/files",
+                headers=headers,
+                params=params
+            )
+
+            if response.status_code == 401:
+                raise Exception("Invalid or expired access token. Please re-authenticate.")
+
+            response_data = response.json()
+            context['data'] = response_data.get("files", [])
         except Exception as e:
             context['success'] = 0
             context['message'] = str(e)
