@@ -93,7 +93,7 @@ class GoogleDriveAuthenticationView(APIView):
             auth_url = (
                 "https://accounts.google.com/o/oauth2/auth?"
                 f"client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={settings.GOOGLE_DRIVE_REDIRECT_URI}&"
-                "response_type=code&scope=https://www.googleapis.com/auth/drive.file&access_type=offline"
+                "response_type=code&scope=https://www.googleapis.com/auth/drive&access_type=offline"
             )
             context['data']['auth_url'] = auth_url
         except Exception as e:
@@ -127,6 +127,32 @@ class GoogleDriveCallbackView(APIView):
                 "refresh_token": token_response.get("refresh_token"),
                 "expires_in": token_response.get("expires_in")
             }
+        except Exception as e:
+            context['success'] = 0
+            context['message'] = str(e)
+        return Response(context)
+
+class RefreshAccessTokenView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        context = {
+            'success': 1,
+            'message': 'File uploaded successfully to Google Drive.',
+            'data': {}
+        }
+        try:
+            refresh_token = request.data.get("refresh_token")
+            token_url = "https://oauth2.googleapis.com/token"
+            token_data = {
+                "client_id": settings.GOOGLE_CLIENT_ID,
+                "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                "refresh_token": refresh_token,
+                "grant_type": "refresh_token"
+            }
+            response = requests.post(token_url, data=token_data).json()
+            context['data']['access_token'] = response.get("access_token")
         except Exception as e:
             context['success'] = 0
             context['message'] = str(e)
@@ -198,7 +224,6 @@ class GoogleDriveDownloadView(APIView):
             access_token = request.GET.get("access_token")
             headers = {"Authorization": f"Bearer {access_token}"}
             response = requests.get(f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media", headers=headers)
-
             context['data']['file_content'] = response.content.decode("utf-8")
         except Exception as e:
             context['success'] = 0
